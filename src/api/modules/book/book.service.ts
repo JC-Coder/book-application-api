@@ -3,6 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { BookCategory } from './entities/book-category.entity';
 import { Book } from './entities/book.entity';
+import {
+    paginate,
+    Pagination,
+    IPaginationOptions,
+  } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class BookService {
@@ -43,6 +48,11 @@ export class BookService {
         return this.bookRepository.find();
     }
 
+    //  get books via pagination
+    async bookPaginate(options: IPaginationOptions): Promise<Pagination<Book>> {
+        return await paginate<Book>(this.bookRepository, options);
+    }
+
 
     // get book via id
     async findOne(id): Promise<Book | object> {
@@ -51,6 +61,19 @@ export class BookService {
         })
 
         if(!result) throw new NotFoundException(`Book with id ${id} not found `);
+
+        return result;
+    }
+
+
+    // get books via category 
+    async findByCategory(category): Promise<BookCategory>{
+        let result = await this.categoryRepository.findOne({
+            where: {name: category},
+            relations: ['books']
+        })
+
+        if(!result ) throw new NotFoundException(`category ${category} not found`)
 
         return result;
     }
