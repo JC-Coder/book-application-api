@@ -72,29 +72,29 @@ export class BookService {
         })
 
         if(!bookExist){
-            // remove uploaded image
-            fs.unlink(`./uploads/images/${file.filename}`, (err) => {
+            // remove uploaded book Pdf
+            fs.unlink(`./uploads/pdf/${file.filename}`, (err) => {
                 if(err) return err;
             });
 
             throw new NotFoundException(`Book with id ${bookId} not found`);
 
         } else {
-            // check if book exist and  already have image 
-            if(bookExist.bookImage){
-                // remove previous image and save the new one 
-                fs.unlink(`./uploads/images/${bookExist.bookImage}`,(err) => {
+            // check if book exist and  already have a file (pdf) 
+            if(bookExist.bookFile){
+                // remove previous file(pdf) and save the new one 
+                fs.unlink(`./uploads/pdf/${bookExist.bookFile}`,(err) => {
                     if(err) throw err;
                 })
             }
 
-            // add image to book
+            // add file(pdf) to book
             let newBook = bookExist;
-            newBook.bookImage = file.filename;
+            newBook.bookFile = file.filename;
 
             let result = await this.bookRepository.update(bookId, newBook);
 
-            return {result, message: "Book image updated successully"}
+            return {result, message: "Book pdf file updated successully"}
         }
     }
 
@@ -188,6 +188,13 @@ export class BookService {
         // check if book have image 
         if(bookToDelete.bookImage){
             fs.unlink(`./uploads/images/${bookToDelete.bookImage}`,(err) => {
+                if(err) throw err;
+            })
+        }
+
+        // check if book have pdf
+         if(bookToDelete.bookFile){
+            fs.unlink(`./uploads/pdf/${bookToDelete.bookFile}`,(err) => {
                 if(err) throw err;
             })
         }

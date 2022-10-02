@@ -36,7 +36,7 @@ export class BookController {
     }
 
     // add / update book file (downloadable pdf)
-    @Put('upload/file/:bookId')
+    @Put('upload/pdf/:bookId')
     @UseInterceptors(
         FileInterceptor("file", {
             storage: diskStorage({
