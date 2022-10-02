@@ -19,11 +19,11 @@ export class BookController {
     }
 
     // add / update book image
-    @Post('upload/image/:bookId')
+    @Put('upload/image/:bookId')
     @UseInterceptors(
         FileInterceptor("image", {
             storage: diskStorage({
-                destination: './uploads',
+                destination: './uploads/images',
                 filename:  (req, file, cb) => {
                     const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('')
                     return cb(null, `${randomName}${extname(file.originalname)}`)
@@ -32,7 +32,24 @@ export class BookController {
         })
     )
     async addBookImage(@UploadedFile() file: Express.Multer.File, @Param('bookId', ParseIntPipe) bookId: number){
-        return await file
+        return await this.bookService.addBookImage(file, bookId);
+    }
+
+    // add / update book file (downloadable pdf)
+    @Put('upload/pdf/:bookId')
+    @UseInterceptors(
+        FileInterceptor("file", {
+            storage: diskStorage({
+                destination: './uploads/pdf',
+                filename:  (req, file, cb) => {
+                    const randomName = Array(32).fill(null).map(() => (Math.round(Math.random() * 16)).toString(16)).join('')
+                    return cb(null, `${randomName}${extname(file.originalname)}`)
+                  }
+            })
+        })
+    )
+    async addBookPdf(@UploadedFile() file: Express.Multer.File, @Param('bookId', ParseIntPipe) bookId: number){
+        return await this.bookService.addBookPdf(file, bookId);
     }
 
 

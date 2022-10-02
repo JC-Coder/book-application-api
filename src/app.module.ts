@@ -12,7 +12,7 @@ import { BookModule } from './api/modules/book/book.module';
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
     MulterModule.register({
-      dest: './uploads',
+      dest: './uploads/images',
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname,'..', 'uploads'),

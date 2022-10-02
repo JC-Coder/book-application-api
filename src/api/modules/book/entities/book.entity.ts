@@ -18,7 +18,7 @@ export class Book {
     @Column()
     datePublished: string;
 
-    @ManyToOne(() =>  BookCategory, (bookCategory) => bookCategory.books)
+    @ManyToOne(() =>  BookCategory, (bookCategory) => bookCategory.books, {onDelete: "CASCADE"})
     category: BookCategory;
 
     @Column({default: null})
