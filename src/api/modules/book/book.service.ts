@@ -8,6 +8,7 @@ import {
     Pagination,
     IPaginationOptions,
   } from 'nestjs-typeorm-paginate';
+import * as fs from 'fs';
 
 @Injectable()
 export class BookService {
@@ -27,6 +28,82 @@ export class BookService {
         newBook.category = catExist;
 
         return  await this.bookRepository.save(newBook);
+    }
+
+
+    // add / update book image 
+    async addBookImage(file: Express.Multer.File, bookId): Promise<any> {
+        let bookExist = await this.bookRepository.findOne({
+            where: {id: bookId}
+        })
+
+        if(!bookExist){
+            // remove uploaded image
+            fs.unlink(`./uploads/images/${file.filename}`, (err) => {
+                if(err) return err;
+            });
+
+            throw new NotFoundException(`Book with id ${bookId} not found`);
+
+        } else {
+            // check if book exist and  already have image 
+            if(bookExist.bookImage){
+                // remove previous image and save the new one 
+                fs.unlink(`./uploads/images/${bookExist.bookImage}`,(err) => {
+                    if(err) throw err;
+                })
+            }
+
+            // add image to book
+            let newBook = bookExist;
+            newBook.bookImage = file.filename;
+
+            let result = await this.bookRepository.update(bookId, newBook);
+
+            return {result, message: "Book image updated successully"}
+        }
+    }
+
+
+    // add / update book file (downloadable pdf)
+    async addBookPdf(file: Express.Multer.File, bookId): Promise<any> {
+        let bookExist = await this.bookRepository.findOne({
+            where: {id: bookId}
+        })
+
+        if(!bookExist){
+            // remove uploaded image
+            fs.unlink(`./uploads/images/${file.filename}`, (err) => {
+                if(err) return err;
+            });
+
+            throw new NotFoundException(`Book with id ${bookId} not found`);
+
+        } else {
+            // check if book exist and  already have image 
+            if(bookExist.bookImage){
+                // remove previous image and save the new one 
+                fs.unlink(`./uploads/images/${bookExist.bookImage}`,(err) => {
+                    if(err) throw err;
+                })
+            }
+
+            // add image to book
+            let newBook = bookExist;
+            newBook.bookImage = file.filename;
+
+            let result = await this.bookRepository.update(bookId, newBook);
+
+            return {result, message: "Book image updated successully"}
+        }
+    }
+
+
+    // delete book image 
+    async deleteBookImage(filename){
+        fs.unlink(`./uploads/images/${filename}`, (err) => {
+            if(err) throw err;
+        })
     }
 
     // find category by name
@@ -55,7 +132,7 @@ export class BookService {
 
 
     // get book via id
-    async findOne(id): Promise<Book | object> {
+    async findOne(id): Promise<Book> {
         let result = await this.bookRepository.findOne({
             where: {id: id}
         })
@@ -101,9 +178,19 @@ export class BookService {
 
     // delete book via id 
     async deleteOne(id): Promise<DeleteResult> {
+        let bookToDelete = await this.bookRepository.findOne({
+            where: {id: id}
+        });
         let result = await this.bookRepository.delete(id);
 
         if(result.affected == 0) throw new NotFoundException(`Book with id ${id} not found`);
+
+        // check if book have image 
+        if(bookToDelete.bookImage){
+            fs.unlink(`./uploads/images/${bookToDelete.bookImage}`,(err) => {
+                if(err) throw err;
+            })
+        }
 
         return result;
     }
