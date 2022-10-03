@@ -1,4 +1,4 @@
-import { Body, Controller, DefaultValuePipe, Delete, FileTypeValidator, Get, MaxFileSizeValidator, Param, ParseFilePipe, ParseIntPipe, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dtos/create-book.dto';
 import { UpdateBookDto } from './dtos/update-book.dto';
@@ -7,6 +7,7 @@ import {Pagination} from 'nestjs-typeorm-paginate';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage, Multer } from 'multer';
 import { extname } from 'path';
+import { CreateBookCategoryDto } from './dtos/create-category.dto';
 
 @Controller('book')
 export class BookController {
@@ -94,12 +95,13 @@ export class BookController {
     async deleteOne(@Param('id', ParseIntPipe) id: number){
         return await this.bookService.deleteOne(id);
     }
-}
-function ApiConsumes(arg0: string) {
-    throw new Error('Function not implemented.');
+
+
+    // add new book category
+    @Post('/category/create')
+    async createCategory(@Body() categoryPayload: CreateBookCategoryDto){
+        return await this.bookService.createCategory(categoryPayload)
+    }
 }
 
-function ApiBody(arg0: { description: string; type: any; }) {
-    throw new Error('Function not implemented.');
-}
 
