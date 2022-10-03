@@ -21,7 +21,7 @@ export class BookService {
         let catExist = await this.findCategory(category);
 
         if(catExist == false){
-            throw new NotFoundException('category not found, check input or create a new category');
+            throw new NotFoundException('category not found, check request or create a new category');
         }
 
         let newBook = book;
@@ -224,6 +224,12 @@ export class BookService {
         }
 
         return result;
+    }
+
+
+    // add new book category 
+    async createCategory(categoryPayload): Promise<BookCategory>{
+        return await this.categoryRepository.save(categoryPayload);
     }
 
 }
