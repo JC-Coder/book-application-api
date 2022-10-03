@@ -7,6 +7,7 @@ import {Pagination} from 'nestjs-typeorm-paginate';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage, Multer } from 'multer';
 import { extname } from 'path';
+import { CreateBookCategoryDto } from './dtos/create-category.dto';
 
 @Controller('book')
 export class BookController {
@@ -94,4 +95,13 @@ export class BookController {
     async deleteOne(@Param('id', ParseIntPipe) id: number){
         return await this.bookService.deleteOne(id);
     }
+
+
+    // add new book category
+    @Post('/category/create')
+    async createCategory(@Body() categoryPayload: CreateBookCategoryDto){
+        return await this.bookService.createCategory(categoryPayload)
+    }
 }
+
+
