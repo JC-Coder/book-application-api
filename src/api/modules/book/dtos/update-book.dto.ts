@@ -1,18 +1,4 @@
 import { IsNotEmpty } from "class-validator";
+import { CreateBookDto } from "./create-book.dto";
 
-export class UpdateBookDto {
-    @IsNotEmpty()
-    title?: string;
-
-    @IsNotEmpty()
-    author?: string;
-
-    @IsNotEmpty()
-    description?: string;
-
-    @IsNotEmpty()
-    datePublished?: string;
-
-    @IsNotEmpty()
-    category?: string;
-}
+export class UpdateBookDto extends CreateBookDto { }

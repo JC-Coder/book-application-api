@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { BookCategory } from './entities/book-category.entity';
@@ -37,6 +37,18 @@ export class BookService {
             where: {id: bookId}
         })
 
+        // check filetype 
+        let condition = /^\w+.(jpg|png|jpeg)$/
+
+        if(!file.filename.match(condition)){
+            // remove uploaded image
+            fs.unlink(`./uploads/images/${file.filename}`, (err) => {
+                if(err) return err;
+            });
+
+            throw new BadRequestException('Uploaded file should be of type png,jpg,jpeg only')
+        }
+
         if(!bookExist){
             // remove uploaded image
             fs.unlink(`./uploads/images/${file.filename}`, (err) => {
@@ -70,6 +82,18 @@ export class BookService {
         let bookExist = await this.bookRepository.findOne({
             where: {id: bookId}
         })
+
+         // check filetype 
+         let condition = /^\w+.(pdf)$/
+
+         if(!file.filename.match(condition)){
+             // remove uploaded file
+             fs.unlink(`./uploads/pdf/${file.filename}`, (err) => {
+                 if(err) return err;
+             });
+ 
+             throw new BadRequestException('Uploaded file should be of type pdf only');
+         }
 
         if(!bookExist){
             // remove uploaded book Pdf

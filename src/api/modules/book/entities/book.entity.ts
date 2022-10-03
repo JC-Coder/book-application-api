@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { BookCategory } from "./book-category.entity";
 
