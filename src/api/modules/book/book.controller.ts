@@ -1,4 +1,4 @@
-import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Delete, FileTypeValidator, Get, MaxFileSizeValidator, Param, ParseFilePipe, ParseIntPipe, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dtos/create-book.dto';
 import { UpdateBookDto } from './dtos/update-book.dto';
@@ -95,3 +95,11 @@ export class BookController {
         return await this.bookService.deleteOne(id);
     }
 }
+function ApiConsumes(arg0: string) {
+    throw new Error('Function not implemented.');
+}
+
+function ApiBody(arg0: { description: string; type: any; }) {
+    throw new Error('Function not implemented.');
+}
+
