@@ -13,7 +13,7 @@ import { AuthModule } from './api/modules/auth/auth.module';
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
     MulterModule.register({
-      dest: './uploads',
+      dest: './uploads/images',
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname,'..', 'uploads'),
