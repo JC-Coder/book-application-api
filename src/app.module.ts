@@ -6,6 +6,7 @@ import { join } from 'path';
 import { typeOrmConfig } from './api/config/typeorm.config';
 import { UserModule } from './api/modules/user/user.module';
 import { BookModule } from './api/modules/book/book.module';
+import { AuthModule } from './api/modules/auth/auth.module';
 
 
 @Module({
@@ -18,7 +19,8 @@ import { BookModule } from './api/modules/book/book.module';
       rootPath: join(__dirname,'..', 'uploads'),
     }),
     UserModule,
-    BookModule
+    BookModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],
