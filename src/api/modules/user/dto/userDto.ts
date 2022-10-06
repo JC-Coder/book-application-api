@@ -1,13 +1,14 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Length,
   Matches,
 } from 'class-validator';
 import { Messages, Regex } from '../util/utilfile';
 
-export class UserDto {
+export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   username: string;
@@ -23,5 +24,6 @@ export class UserDto {
 
   @IsNotEmpty()
   @IsString()
+  @IsOptional()
   role: string;
 }

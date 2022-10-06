@@ -1,4 +1,4 @@
-import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dtos/create-book.dto';
 import { UpdateBookDto } from './dtos/update-book.dto';
@@ -8,6 +8,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage, Multer } from 'multer';
 import { extname } from 'path';
 import { CreateBookCategoryDto } from './dtos/create-category.dto';
+import { hasRole } from '../auth/decorators/roles.decorators';
+import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { RolesGuard } from '../auth/guards/role.guard';
 
 @Controller('book')
 export class BookController {
@@ -55,6 +58,8 @@ export class BookController {
 
 
     // get all books
+    @hasRole('admin')
+    @UseGuards(JwtAuthGuard,RolesGuard)
     @Get('/all')
     async findAll(){
         return await this.bookService.findAll();
