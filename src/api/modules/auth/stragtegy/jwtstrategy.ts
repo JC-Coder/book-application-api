@@ -5,7 +5,7 @@ import { jwtConstants } from '../constant';
 
 
 @Injectable()
-export class jwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -15,7 +15,6 @@ export class jwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: any) {
-    const { password, ...result } = payload;
-    return result;
+    return payload;
   }
 }
