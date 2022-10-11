@@ -11,6 +11,8 @@ import { hasRole } from '../auth/decorators/role.decorators';
 import { JwtAuthGuard } from '../auth/Guards/authGuard';
 import { RolesGuard } from '../auth/Guards/roleguard';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { CreateBookCategoryDto } from './dtos/create-category.dto';
+
 
 @ApiTags('Book')
 @Controller('book')
@@ -82,8 +84,7 @@ export class BookController {
   }
 
   // get all books
-  @hasRole('admin')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+
   @Get('/all')
   async findAll() {
     return await this.bookService.findAll();
@@ -132,4 +133,14 @@ export class BookController {
   async deleteOne(@Param('id', ParseIntPipe) id: number) {
     return await this.bookService.deleteOne(id);
   }
+
+  // add new book category
+  @hasRole('admin')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Post('/category/create')
+  async createCategory(@Body() categoryPayload: CreateBookCategoryDto) {
+    return await this.bookService.createCategory(categoryPayload);
+  }
 }
+
+

@@ -38,7 +38,7 @@ export class CreateUserDto {
   @ApiProperty({
     description: 'User Role',
     example: 'admin',
-  })
+  })    
   @IsNotEmpty()
   @IsString()
   @IsOptional()

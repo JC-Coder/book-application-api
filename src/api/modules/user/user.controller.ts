@@ -89,4 +89,5 @@ import { ApiBadRequestResponse, ApiCreatedResponse, ApiProperty, ApiTags } from 
     async updateUser(@Param('id') id, @Body() user) {
       return await this.userService.updateUser(id, user);
     }
+   
   }

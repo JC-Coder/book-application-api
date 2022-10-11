@@ -7,6 +7,7 @@ import { typeOrmConfig } from './api/config/typeorm.config';
 import { UserModule } from './api/modules/user/user.module';
 import { BookModule } from './api/modules/book/book.module';
 import { AuthModule } from './api/modules/auth/auth.module';
+import { ContactModule } from './api/modules/contact/contact.module';
 
 
 @Module({
@@ -20,7 +21,8 @@ import { AuthModule } from './api/modules/auth/auth.module';
     }),
     UserModule,
     BookModule,
-    AuthModule
+    AuthModule,
+    ContactModule
   ],
   controllers: [],
   providers: [],

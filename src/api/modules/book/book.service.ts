@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { BookCategory } from './entities/book-category.entity';
@@ -21,7 +21,7 @@ export class BookService {
         let catExist = await this.findCategory(category);
 
         if(catExist == false){
-            throw new NotFoundException('category not found, check input or create a new category');
+            throw new NotFoundException('category not found, check request or create a new category');
         }
 
         let newBook = book;
@@ -36,6 +36,18 @@ export class BookService {
         let bookExist = await this.bookRepository.findOne({
             where: {id: bookId}
         })
+
+        // check filetype 
+        let condition = /^\w+.(jpg|png|jpeg)$/
+
+        if(!file.filename.match(condition)){
+            // remove uploaded image
+            fs.unlink(`./uploads/images/${file.filename}`, (err) => {
+                if(err) return err;
+            });
+
+            throw new BadRequestException('Uploaded file should be of type png,jpg,jpeg only')
+        }
 
         if(!bookExist){
             // remove uploaded image
@@ -70,6 +82,18 @@ export class BookService {
         let bookExist = await this.bookRepository.findOne({
             where: {id: bookId}
         })
+
+         // check filetype 
+         let condition = /^\w+.(pdf)$/
+
+         if(!file.filename.match(condition)){
+             // remove uploaded file
+             fs.unlink(`./uploads/pdf/${file.filename}`, (err) => {
+                 if(err) return err;
+             });
+ 
+             throw new BadRequestException('Uploaded file should be of type pdf only');
+         }
 
         if(!bookExist){
             // remove uploaded book Pdf
@@ -200,6 +224,12 @@ export class BookService {
         }
 
         return result;
+    }
+
+
+    // add new book category 
+    async createCategory(categoryPayload): Promise<BookCategory>{
+        return await this.categoryRepository.save(categoryPayload);
     }
 
 }
