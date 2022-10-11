@@ -5,17 +5,18 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe() );
+  app.useGlobalPipes(new ValidationPipe() )  ;
   app.enableCors();
+    const config = new DocumentBuilder()
+      .setTitle('Book Aplication Documentation')
+      .setDescription('The App API description')
+      .setVersion('1.0')
+      .addTag('Documentation')
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
 
-  // swagger doc setting
-  const config = new DocumentBuilder()
-  .setTitle('Book app api')
-  .setDescription('The book application api')
-  .setVersion('1.0')
-  .build();
-const document = SwaggerModule.createDocument(app, config);
-SwaggerModule.setup('api', app, document);
+ 
 
   await app.listen(process.env.PORT || 3000);
 }

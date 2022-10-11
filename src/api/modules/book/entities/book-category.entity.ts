@@ -1,17 +1,30 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Book } from "./book.entity";
 
 @Entity()
 export class BookCategory {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  @ApiProperty({
+    description: 'Primary generated userId',
+    example: 1,
+  })
+  id: number;
 
-    @Column()
-    name: string;
+  @Column()
+  @ApiProperty({
+    description: 'name of book',
+    example: 'heart books',
+  })
+  name: string;
 
-    @OneToMany(() => Book, (book) => book.category)
-    books: Book[];
+  @OneToMany(() => Book, (book) => book.category)
+  books: Book[];
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @CreateDateColumn()
+  @ApiProperty({
+    description: 'Date of book created',
+    
+  })
+  createdAt: Date;
 }

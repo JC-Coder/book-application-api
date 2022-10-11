@@ -4,36 +4,59 @@ import { BookCategory } from "./book-category.entity";
 
 @Entity()
 export class Book {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  @ApiProperty({ description: 'Primary Key as UserID', example: 1 })
+  id: number;
 
-    @Column()
-    title: string;
+  @Column()
+  @ApiProperty({ description: 'Title of the book', example: 'The Snake Girl' })
+  title: string;
 
-    @Column()
-    author: string;
+  @Column()
+  @ApiProperty({
+    description: 'Writer of the book',
+    example: 'Apostle Suliman',
+  })
+  author: string;
 
-    @Column()
-    description: string;
+  @Column()
+  @ApiProperty({
+    description: 'Describe content of the book',
+    example: 'it is about a Snake Girl',
+  })
+  description: string;
 
-    @Column()
-    datePublished: string;
+  @Column()
+  @ApiProperty({
+    description: 'Date of book Publishment',
+    example: '22nd MAY, 1994',
+  })
+  datePublished: string;
 
-    @ManyToOne(() =>  BookCategory, (bookCategory) => bookCategory.books, {onDelete: "CASCADE"})
-    category: BookCategory;
 
-    @Column({default: null})
-    ownerId: number;
+  @ManyToOne(() => BookCategory, (bookCategory) => bookCategory.books, {
+    onDelete: 'CASCADE',
+  })
+  category: BookCategory;
 
-    @Column({default: null})
-    bookImage: string;
+  @Column({ default: null })
+  ownerId: number;
 
-    @Column({default: null})
-    bookFile: string;
+  @Column({ default: null })
+  bookImage: string;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @Column({ default: null })
+  bookFile: string;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
+  @CreateDateColumn()
+  @ApiProperty({
+    description: 'When book was Created',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  @ApiProperty({
+    description: 'When book was updated',
+  })
+  updatedAt: Date;
 }
