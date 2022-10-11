@@ -5,7 +5,7 @@ import { Book } from "../entities/book.entity";
 export class CreateBookCategoryDto {
   @ApiProperty({
     description: 'the name of a category',
-    example: `Weddlock`,
+    example: `sorrow`,
   })
   @IsNotEmpty()
   @IsString()
