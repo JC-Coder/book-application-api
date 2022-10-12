@@ -14,7 +14,7 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
-  
+
   // Getting user by their email from server
   async getUserByEmail(email: string) {
     return await this.userRepository.findOne({ where: { email: email } });
@@ -26,20 +26,24 @@ export class UserService {
       where: { id: id },
     });
   }
-  
+
   // hash a password
   async hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, 12);
   }
 
   // User registration
-  async registerUser(user: CreateUserDto): Promise<User> {
+  async registerUser(user: CreateUserDto): Promise<User | Object> {
     const userEmail = await this.getUserByEmail(user.email);
+    if (user.password !== user.confirmPassword) {
+      return { message: `Passwords does not match, Confirm Password` };
+    }
     if (!userEmail) {
       const newUser = await this.userRepository.create(user);
       newUser.password = await this.hashPassword(user.password);
       const result = await this.userRepository.save(newUser);
       delete result.password;
+      delete result.confirmPassword
       return result;
     } else {
       throw new BadRequestException(`User already Exists`);
@@ -59,6 +63,4 @@ export class UserService {
       message: `User sucessfully Updated`,
     };
   }
-
-  
 }

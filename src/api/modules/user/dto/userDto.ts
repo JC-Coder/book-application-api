@@ -11,12 +11,20 @@ import { Messages, Regex } from '../util/utilfile';
 
 export class CreateUserDto {
   @ApiProperty({
-    description: 'User Full Nmae',
-    example: 'Peter Etim',
+    description: 'User First Name',
+    example: 'Peter',
   })
   @IsString()
   @IsNotEmpty()
-  username: string;
+  firstName: string;
+
+  @ApiProperty({
+    description: 'User Last Name',
+    example: 'Etim',
+  })
+  @IsString()
+  @IsNotEmpty()
+  lastName: string;
 
   @ApiProperty({
     description: 'User Correct Email address',
@@ -34,6 +42,16 @@ export class CreateUserDto {
   @Length(6, 12)
   @Matches(Regex.password, { message: Messages.passwordMessage })
   password: string;
+
+
+  @ApiProperty({
+    description: 'User Confirm password',
+    example: 'Peter@1234',
+  })
+  @IsNotEmpty()
+  @Length(6, 12)
+  @Matches(Regex.password, { message: Messages.passwordMessage })
+  confirmPassword: string;
 
   @ApiPropertyOptional({
     description: 'This is an optional property for User Role',

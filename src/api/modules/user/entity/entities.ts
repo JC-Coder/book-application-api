@@ -8,18 +8,26 @@ export class User {
     description: 'Primary generated userId',
     example: 1,
   })
-  id: string;
+  id: number;
 
   @Column()
   @ApiProperty({
-    description: 'User Full Nmae',
-    example: 'Peter Etim',
+    description: 'User First Name',
+    example: 'Peter',
   })
-  username: string;
+  firstName: string;
+
+
+  @Column()
+  @ApiProperty({
+    description: 'User Last Name',
+    example: 'Etim',
+  })
+  lastName: string;
 
   @ApiProperty({
     description: 'User Correct Email address',
-    example: 'mike@gmail.com',
+    example: 'peter@gmail.com',
   })
   @Column({ unique: true })
   email: string;
@@ -32,8 +40,15 @@ export class User {
   password: string;
 
   @ApiProperty({
+    description: 'User Confirm password',
+    example: 'Peter@1234',
+  })
+  @Column()
+  confirmPassword: string;
+
+  @ApiProperty({
     description: 'User Role',
-    example: 'admin',
+    default: 'user',
   })
   @Column({ default: 'user' })
   role: string;
