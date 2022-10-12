@@ -10,7 +10,7 @@ import { extname } from 'path';
 import { hasRole } from '../auth/decorators/role.decorators';
 import { JwtAuthGuard } from '../auth/Guards/authGuard';
 import { RolesGuard } from '../auth/Guards/roleguard';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import {  ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnprocessableEntityResponse } from '@nestjs/swagger';
 import { CreateBookCategoryDto } from './dtos/create-category.dto';
 
 
@@ -23,8 +23,9 @@ export class BookController {
   @hasRole('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('/create')
-  @ApiCreatedResponse({ description: 'Created Book Response', type: Book })
-  @ApiBadRequestResponse({ description: 'Book not Created. Try again!!!' })
+  @ApiCreatedResponse({ description: 'Created Succesfully', type: Book })
+  @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
+  @ApiForbiddenResponse({ description: 'Unauthorized Request' })
   async createBook(@Body() book: CreateBookDto): Promise<any> {
     return await this.bookService.createBook(book);
   }
@@ -33,6 +34,9 @@ export class BookController {
   @hasRole('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Put('upload/image/:bookId')
+  @ApiOkResponse({ description: 'The resource was Uploaded successfully' })
+  @ApiNotFoundResponse({ description: 'Resource not found' })
+  @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -49,8 +53,6 @@ export class BookController {
   )
 
   // add book images
-  @hasRole('admin')
-  @UseGuards(JwtAuthGuard, RolesGuard)
   async addBookImage(
     @UploadedFile() file: Express.Multer.File,
     @Param('bookId', ParseIntPipe) bookId: number,
@@ -62,6 +64,9 @@ export class BookController {
   @hasRole('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Put('upload/pdf/:bookId')
+  @ApiOkResponse({ description: 'The resource was uploaded successfully' })
+  @ApiNotFoundResponse({ description: 'Resource not found' })
+  @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -86,12 +91,16 @@ export class BookController {
   // get all books
 
   @Get('/all')
+  @ApiOkResponse({ description: 'All resource Response successfully' })
+  @ApiNotFoundResponse({ description: 'Resource not found' })
   async findAll() {
     return await this.bookService.findAll();
   }
 
   // get books via pagination
   @Get('all/paginate')
+  @ApiOkResponse({ description: 'All resource Response successfully' })
+  @ApiNotFoundResponse({ description: 'Resource not found' })
   async bookPaginate(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
@@ -105,12 +114,18 @@ export class BookController {
 
   // get book via id
   @Get('/:id')
+  @ApiOkResponse({ description: 'The resource was returned successfully' })
+  @ApiForbiddenResponse({ description: 'Unauthorized Request' })
+  @ApiNotFoundResponse({ description: 'Resource not found' })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.bookService.findOne(id);
   }
 
   // get books via category
   @Get('/category/:categoryName')
+  @ApiOkResponse({ description: 'The resource was returned successfully' })
+  @ApiForbiddenResponse({ description: 'Unauthorized Request' })
+  @ApiNotFoundResponse({ description: 'Resource not found' })
   async findByCategory(@Param('categoryName') categoryName: string) {
     return this.bookService.findByCategory(categoryName);
   }
@@ -119,6 +134,10 @@ export class BookController {
   @hasRole('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Put('/update/:id')
+  @ApiOkResponse({ description: ' resource was updated successfully' })
+  @ApiNotFoundResponse({ description: 'Resource not found' })
+  @ApiForbiddenResponse({ description: 'Unauthorized Request' })
+  @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
   async updateBook(
     @Param('id', ParseIntPipe) id: number,
     @Body() book: UpdateBookDto,
@@ -130,6 +149,9 @@ export class BookController {
   @hasRole('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete('/:id')
+  @ApiOkResponse({ description: 'The resource was returned successfully' })
+  @ApiForbiddenResponse({ description: 'Unauthorized Request' })
+  @ApiNotFoundResponse({ description: 'Resource not found' })
   async deleteOne(@Param('id', ParseIntPipe) id: number) {
     return await this.bookService.deleteOne(id);
   }
@@ -138,6 +160,9 @@ export class BookController {
   @hasRole('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('/category/create')
+  @ApiCreatedResponse({ description: 'Created Succesfully' })
+  @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
+  @ApiForbiddenResponse({ description: 'Unauthorized Request' })
   async createCategory(@Body() categoryPayload: CreateBookCategoryDto) {
     return await this.bookService.createCategory(categoryPayload);
   }

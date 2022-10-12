@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
@@ -20,7 +20,7 @@ export class CreateUserDto {
 
   @ApiProperty({
     description: 'User Correct Email address',
-    example: 'mike@gmail.com',
+    example: 'peter@gmail.com',
   })
   @IsNotEmpty()
   @IsEmail()
@@ -35,10 +35,10 @@ export class CreateUserDto {
   @Matches(Regex.password, { message: Messages.passwordMessage })
   password: string;
 
-  @ApiProperty({
-    description: 'User Role',
-    example: 'admin',
-  })    
+  @ApiPropertyOptional({
+    description: 'This is an optional property for User Role',
+    default:"user",
+  })
   @IsNotEmpty()
   @IsString()
   @IsOptional()
