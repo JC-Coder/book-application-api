@@ -11,11 +11,11 @@ export class BookCategory {
   })
   id: number;
 
-  @Column()
   @ApiProperty({
-    description: 'name of book',
-    example: 'heart books',
-  })
+      description: 'name of book',
+      example: 'heart books',
+    })
+  @Column()
   name: string;
 
   @OneToMany(() => Book, (book) => book.category)

@@ -227,7 +227,15 @@ export class BookService {
 
     // add new book category 
     async createCategory(categoryPayload): Promise<BookCategory>{
-        return await this.categoryRepository.save(categoryPayload);
+        let Exists = await this.categoryRepository.findOne({
+            where: {name: categoryPayload.name}
+        })
+
+        if(Exists) throw new BadRequestException('Category with this name already exists')
+
+        let result = await this.categoryRepository.save(categoryPayload);
+
+        return result;
     }
 
 }

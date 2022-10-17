@@ -1,4 +1,4 @@
-import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, Response, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dtos/create-book.dto';
 import { UpdateBookDto } from './dtos/update-book.dto';
@@ -10,7 +10,7 @@ import { extname } from 'path';
 import { hasRole } from '../auth/decorators/role.decorators';
 import { JwtAuthGuard } from '../auth/Guards/authGuard';
 import { RolesGuard } from '../auth/Guards/roleguard';
-import {  ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnprocessableEntityResponse } from '@nestjs/swagger';
+import {  ApiBearerAuth, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnprocessableEntityResponse } from '@nestjs/swagger';
 import { CreateBookCategoryDto } from './dtos/create-category.dto';
 
 
@@ -22,11 +22,13 @@ export class BookController {
   // create new book
   @hasRole('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Post('/create')
+  @ApiBearerAuth('access-token')
   @ApiCreatedResponse({ description: 'Created Succesfully', type: Book })
   @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
   @ApiForbiddenResponse({ description: 'Unauthorized Request' })
-  async createBook(@Body() book: CreateBookDto): Promise<any> {
+  @Post('/create')
+  async createBook(@Body() book: CreateBookDto, @Response() res): Promise<any> {
+    console.log(await res.user);
     return await this.bookService.createBook(book);
   }
 
