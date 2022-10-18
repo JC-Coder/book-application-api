@@ -19,6 +19,7 @@ import { JwtAuthGuard } from '../auth/Guards/authGuard';
 import { UserGuard } from '../auth/Guards/userGuard';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
@@ -72,14 +73,15 @@ export class UserController {
     return await this.authService.logout(response);
   }
 
-  // Authorization of users
+  // get user profile 
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ description: 'The resource was returned successfully' })
   @ApiForbiddenResponse({ description: 'Unauthorized Request' })
   @ApiNotFoundResponse({ description: 'Resource not found' })
+  @ApiBearerAuth('access-token')
   @Get('profile')
   async getUser(@Request() req) {
-    return await req.user;
+    return await this.userService.userProfile(req.user.email);
   }
 
   //User update Profile

@@ -63,4 +63,14 @@ export class UserService {
       message: `User sucessfully Updated`,
     };
   }
+
+
+  // get user profile 
+  async userProfile(email){
+    let user = await this.getUserByEmail(email);
+    delete user.password;
+    delete user.confirmPassword;
+
+    return user;
+  }
 }

@@ -10,6 +10,4 @@ export class CreateBookCategoryDto {
   @IsNotEmpty()
   @IsString()
   name: string;
-
-  books: Book[];
 }

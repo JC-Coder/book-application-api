@@ -169,10 +169,8 @@ export class BookService {
 
     // get books via category 
     async findByCategory(category): Promise<BookCategory>{
-        let result = await this.categoryRepository.findOne({
-            where: {name: category},
-            relations: ['books']
-        })
+       // this will return all books in a particular category and get total items count 
+       let result = await this.categoryRepository.createQueryBuilder('c').where('c.name = :category', {category: category}).leftJoinAndSelect('c.books', 'cb').loadRelationCountAndMap('c.totalBooks', 'c.books').getOne();
 
         if(!result ) throw new NotFoundException(`category ${category} not found`)
 
@@ -229,7 +227,15 @@ export class BookService {
 
     // add new book category 
     async createCategory(categoryPayload): Promise<BookCategory>{
-        return await this.categoryRepository.save(categoryPayload);
+        let Exists = await this.categoryRepository.findOne({
+            where: {name: categoryPayload.name}
+        })
+
+        if(Exists) throw new BadRequestException('Category with this name already exists')
+
+        let result = await this.categoryRepository.save(categoryPayload);
+
+        return result;
     }
 
 }

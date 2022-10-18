@@ -1,4 +1,4 @@
-import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put, Query, Response, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dtos/create-book.dto';
 import { UpdateBookDto } from './dtos/update-book.dto';
@@ -10,7 +10,7 @@ import { extname } from 'path';
 import { hasRole } from '../auth/decorators/role.decorators';
 import { JwtAuthGuard } from '../auth/Guards/authGuard';
 import { RolesGuard } from '../auth/Guards/roleguard';
-import {  ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnprocessableEntityResponse } from '@nestjs/swagger';
+import {  ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiProperty, ApiTags, ApiUnprocessableEntityResponse } from '@nestjs/swagger';
 import { CreateBookCategoryDto } from './dtos/create-category.dto';
 
 
@@ -22,21 +22,24 @@ export class BookController {
   // create new book
   @hasRole('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Post('/create')
+  @ApiBearerAuth('access-token')
   @ApiCreatedResponse({ description: 'Created Succesfully', type: Book })
   @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
   @ApiForbiddenResponse({ description: 'Unauthorized Request' })
-  async createBook(@Body() book: CreateBookDto): Promise<any> {
+  @Post('/create')
+  async createBook(@Body() book: CreateBookDto, @Response() res): Promise<any> {
+    console.log(await res.user);
     return await this.bookService.createBook(book);
   }
 
   // add / update book image
   @hasRole('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Put('upload/image/:bookId')
   @ApiOkResponse({ description: 'The resource was Uploaded successfully' })
   @ApiNotFoundResponse({ description: 'Resource not found' })
   @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
+  @ApiBearerAuth('access-token')
+  @Put('upload/image/:bookId')
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -63,10 +66,11 @@ export class BookController {
   // add / update book file (downloadable pdf)
   @hasRole('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Put('upload/pdf/:bookId')
   @ApiOkResponse({ description: 'The resource was uploaded successfully' })
   @ApiNotFoundResponse({ description: 'Resource not found' })
   @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
+  @ApiBearerAuth('access-token')
+  @Put('upload/pdf/:bookId')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -133,11 +137,12 @@ export class BookController {
   // update book via id
   @hasRole('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Put('/update/:id')
   @ApiOkResponse({ description: ' resource was updated successfully' })
   @ApiNotFoundResponse({ description: 'Resource not found' })
   @ApiForbiddenResponse({ description: 'Unauthorized Request' })
   @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
+  @ApiBearerAuth('access-token')
+  @Put('/update/:id')
   async updateBook(
     @Param('id', ParseIntPipe) id: number,
     @Body() book: UpdateBookDto,
@@ -148,10 +153,11 @@ export class BookController {
   // delete book via id
   @hasRole('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Delete('/:id')
   @ApiOkResponse({ description: 'The resource was returned successfully' })
   @ApiForbiddenResponse({ description: 'Unauthorized Request' })
   @ApiNotFoundResponse({ description: 'Resource not found' })
+  @ApiBearerAuth('access-token')
+  @Delete('/:id')
   async deleteOne(@Param('id', ParseIntPipe) id: number) {
     return await this.bookService.deleteOne(id);
   }
@@ -159,10 +165,11 @@ export class BookController {
   // add new book category
   @hasRole('admin')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Post('/category/create')
   @ApiCreatedResponse({ description: 'Created Succesfully' })
   @ApiUnprocessableEntityResponse({ description: 'Bad Request' })
   @ApiForbiddenResponse({ description: 'Unauthorized Request' })
+  @ApiBearerAuth('access-token')
+  @Post('/category/create')
   async createCategory(@Body() categoryPayload: CreateBookCategoryDto) {
     return await this.bookService.createCategory(categoryPayload);
   }
