@@ -9,5 +9,5 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   database: process.env.PGDATABASE || 'book_app_api',
   autoLoadEntities: true,
   synchronize: true,
-  dropSchema: false,
+  dropSchema: true,
 };
